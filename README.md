@@ -1,4 +1,4 @@
-<h1>description</h1> 
+<h1>Description</h1> 
 This is a simple web game sapper js<br>
 You need to clear all the checkbox
 <h1><a href="http://output.jsbin.com/kuxikodawa">LIVE DEMO</a></h1>
