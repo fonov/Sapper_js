@@ -1,0 +1,158 @@
+
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<meta charset="utf-8">
+<title>Web Sapper</title>
+<style>
+div{
+  width: auto;
+  margin:50px auto;
+  box-shadow: 9px 9px 30px 5px rgba(0,0,0,0.5);
+}
+input.warning{
+    box-shadow: 0em 0em .0em .3em #FFDF00;
+}
+input.bomb{
+    box-shadow: 0em 0em .0em .3em #FF4A3D;
+}
+h1{
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>Web Sapper v 0.1</h1>
+<div seting=""></div>
+<h1><label for="nomistake">Профессионал</label><input type="checkbox" id="nomistake" onClick="nomistake()" nomistake="true"></h1>
+<script id="jsbin-javascript">
+$( document ).ready(function() {
+    // Длина поля
+    var place = 15;
+    // Инициализация
+    install(place);
+});
+var install = function(n){
+  // Авто выставление ширины
+  $("div").css("width", n*20+"px");
+  // Установка настроек
+  $("div").attr("seting", n);
+  // Создание минного поля
+  for(var i=1; i<n*n+1; i++){
+  $("div").append('<input type="checkbox" checked="checked" bomb="false" id="'+i+'" class="" onClick="checkbomb(this.id)">');
+  if(i%n === 0){
+  // Через каждые n элементов добавление переноса строки
+  $("div").append('<br>');
+  }
+  }
+  // Установка мин на поле
+  // Создаем пустой массив
+  var placebomb = [];
+  // Функция закладки бомбы
+  function set_bomb(){
+    // Случайное число от 1 до n^2
+    var random = Math.floor((Math.random()*(n*n)) + 1);
+    // Если бомба уже заложена в эту клетку, вызываем рекурсию
+    if(placebomb.indexOf(random) > -1){
+    return set_bomb();
+    }
+    // Добавление места закладки бомбы
+    placebomb.push(random);
+    // Создание бомбы на поле
+    $("#"+random).attr("bomb", "true");
+  }
+  // Цикл закладки бомбы
+  for(var m=0; m<n; m++){
+    set_bomb();
+  }
+  // Вывод массива в консоль, для отладки
+  console.log(placebomb);
+};
+
+// Проверка кнопки, при нажатии на неё
+var checkbomb = function(id){
+// Получение инфо о длине поля
+var place = $("div").attr("seting");
+// Проверка заложенности бомбы в клетки
+var bomb = $("#"+id).attr("bomb");
+// Моделирование сценария если бомба в соседний клетки 
+var arraybomb = [id-place, id-(-place), id-1, id-(-1), id-(-place-1), id-(-place)-1, id-place-1, id-place-(-1)];
+// Моделирование сценария если бомба через клетку
+var arraywarning = [id-place*2, id-(-place*2), id-1*2, id-(-1*2), id-(-place*2-1*2), id-(-place*2)-1*2, id-place*2-1*2, id-place*2-(-1*2), id-place*2-1 , id-place*2-(-1), id-(-place*2)-1, id-(-place*2)-(-1), id-(-place)-(-1*2), id-(-place)-(1*2), id-(place)-(1*2), id-(place)-(-1*2)];
+if(bomb === 'true'){
+  // Если бомба заложена
+  // Удаление всех стилей на поле
+  $("input").removeClass();
+  // Выделение клеток с бомбами
+  for(var z=1; z<place*place+1; z++){
+      bomb = $("#"+z).attr("bomb");
+      if(bomb === 'true'){
+        $("#"+z).addClass('bomb');
+      }
+  }
+  // Пользовательский выбор
+  var cmd = confirm("Заново?");
+  // Если да, то перезагрузим поля
+  if(cmd === true){
+    reinstal();
+  }
+  // Если нет
+  if(cmd === false){
+    alert('Вы всегда можете начать заново, просто перезагрузи страницу');
+  }
+  return;
+}
+else{
+// Исполнение первого сценария
+for(var m=0; m<arraybomb.length; m++){
+  if(arraybomb[m] > 0 || arraybomb[m] < place*place){
+    bomb = $("#"+arraybomb[m]).attr("bomb");
+    if(bomb === 'true'){
+      return marklike(id, 'bomb');
+    }
+  }
+}
+// Исполнение второго сценария
+for(var q=0; q<arraywarning.length; q++){
+  if(arraywarning[m] > 0 || arraywarning[m] < place*place){
+    bomb = $("#"+arraywarning[m]).attr("bomb");
+    if(bomb === 'true'){
+      return marklike(id, 'warning');
+    }
+  }
+}
+}
+};
+// Маркировка
+var marklike = function(id, type){
+var place = $("div").attr("seting");
+var arraybomb = [id-place, id-(-place), id-1, id-(-1), id-(-place-1), id-(-place)-1, id-place-1, id-place-(-1)];
+for(var m=0; m<arraybomb.length; m++){
+  if(arraybomb[m] > 0 || arraybomb[m] < place*place){
+    $("#"+arraybomb[m]).addClass(type);
+  }
+}
+};
+// Перезагрузка поля
+var reinstal = function(){
+var place = $("div").attr("seting");
+$("div").empty();
+setTimeout(install, 50, place);
+};
+// Для профи режима
+var nomistake = function(){
+var mist = $("#nomistake").attr("nomistake");
+if(mist === 'false'){
+$("#nomistake").attr("nomistake", "true");
+$("div").attr("seting", "15");  
+reinstal();
+}
+if(mist === 'true'){
+$("#nomistake").attr("nomistake", "false");
+$("div").attr("seting", "25");  
+reinstal();
+}
+};
+</script>
+</body>
+</html>
