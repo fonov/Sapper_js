@@ -1,13 +1,14 @@
 <html>
 <head>
 <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
-<meta charset="utf-8">
-<title>Web Sapper</title>
-<style>
+  <meta charset="utf-8">
+  <title>Web Sapper</title>
+<style id="jsbin-css">
 div{
   width: auto;
   margin:50px auto;
   box-shadow: 9px 9px 30px 5px rgba(0,0,0,0.5);
+  text-align: center;
 }
 input.warning{
     box-shadow: 0em 0em .0em .3em #FFDF00;
@@ -15,7 +16,7 @@ input.warning{
 input.bomb{
     box-shadow: 0em 0em .0em .3em #FF4A3D;
 }
-h1{
+h1, h3{
   text-align: center;
 }
 </style>
@@ -23,6 +24,7 @@ h1{
 <body>
 <h1>Web Sapper v 0.1</h1>
 <div seting=""></div>
+<h3>Для запуска нажмите любую кнопку</h3>
 <h1><label for="nomistake">Профессионал</label><input type="checkbox" id="nomistake" onClick="nomistake()" nomistake="true"></h1>
 <script id="jsbin-javascript">
 $( document ).ready(function() {
@@ -78,6 +80,41 @@ var bomb = $("#"+id).attr("bomb");
 var arraybomb = [id-place, id-(-place), id-1, id-(-1), id-(-place-1), id-(-place)-1, id-place-1, id-place-(-1)];
 // Моделирование сценария если бомба через клетку
 var arraywarning = [id-place*2, id-(-place*2), id-1*2, id-(-1*2), id-(-place*2-1*2), id-(-place*2)-1*2, id-place*2-1*2, id-place*2-(-1*2), id-place*2-1 , id-place*2-(-1), id-(-place*2)-1, id-(-place*2)-(-1), id-(-place)-(-1*2), id-(-place)-(1*2), id-(place)-(1*2), id-(place)-(-1*2)];
+// Удадение всех классов у выбранного checbox
+$("#"+id).removeClass();
+// Удадение атрибута checked
+$("#"+id).removeAttr("checked");
+// Обновление счетчика  
+function total_check(place){
+var total = 0;
+var total_place = place*place-place;
+for(var z=1; z<place*place+1; z++){
+      var attr = $("#"+z).attr("checked");
+      var bomb = $("#"+z).attr("bomb");
+      if(attr === 'checked' && bomb === 'false'){
+        total++;
+}
+} 
+var win = total_place-(total_place-total);
+// Событий когда пользователь выиграет
+if(win === 0){
+ var cmd = confirm("Вы выйграли, заново?");
+  // Если да, то перезагрузим поля
+  if(cmd === true){
+    reinstal();
+  }
+  // Если нет
+  if(cmd === false){
+    alert('Вы всегда можете начать заново, просто перезагрузи страницу');
+  }
+  return;
+}
+total = total_place-total;
+// Вывод данных на экран  
+$("h3").text("Поле "+place+"*"+place+" размированно "+total+" из "+total_place);  
+}
+// Вызов функции
+total_check(place);    
 if(bomb === 'true'){
   // Если бомба заложена
   // Удаление всех стилей на поле
@@ -97,7 +134,7 @@ if(bomb === 'true'){
   }
   // Если нет
   if(cmd === false){
-    alert('Вы всегда можете начать заново, прост перезапустите страницу');
+    alert('Вы всегда можете начать заново, просто перезагрузи страницу');
   }
   return;
 }
@@ -128,7 +165,12 @@ var place = $("div").attr("seting");
 var arraybomb = [id-place, id-(-place), id-1, id-(-1), id-(-place-1), id-(-place)-1, id-place-1, id-place-(-1)];
 for(var m=0; m<arraybomb.length; m++){
   if(arraybomb[m] > 0 || arraybomb[m] < place*place){
+    //Проверка клетки
+    var attr = $("#"+arraybomb[m]).attr("checked");
+    if(attr === "checked"){
+    // Маркировка только отмеченных клеток
     $("#"+arraybomb[m]).addClass(type);
+    }
   }
 }
 };
